@@ -1,141 +1,113 @@
 body {
-  font-family: sans-serif;
-  background: #f7f7f7;
-  color: #333;
+  background-color: #0a1a2f;
+  color: #ffffff;
+  font-family: 'Arial', sans-serif;
   margin: 0;
-  padding: 2rem;
+  padding: 0;
 }
 
 .container {
   max-width: 800px;
   margin: auto;
+  padding: 1rem;
 }
 
-h1 span {
-  font-size: 1.5rem;
-  font-weight: bold;
+.title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #ffdd57;
 }
 
 button {
+  background-color: #1f3b5b;
+  color: white;
+  border: none;
   padding: 0.5rem 1rem;
+  margin: 0.5rem;
   font-size: 1rem;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-#gachaSlot {
-  margin: 1.5rem 0;
+button:hover {
+  background-color: #295080;
+}
+
+#gachaSlot, .inventory {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
+  gap: 10px;
+  margin: 1rem 0;
 }
 
 .card {
+  background-color: #1b2b3a;
   padding: 1rem;
   border-radius: 10px;
-  background: white;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  min-width: 120px;
+  color: white;
   text-align: center;
-  font-weight: bold;
+  min-width: 100px;
+  box-shadow: 0 0 5px #000000aa;
   position: relative;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
-.card.animate {
-  animation: pop 1s ease-out;
+.card.legendary {
+  border: 2px solid gold;
+  background: linear-gradient(135deg, #4b0082, #8b00ff);
 }
 
-@keyframes pop {
-  0% { transform: scale(0.5) rotate(0deg); }
-  50% { transform: scale(1.2) rotate(360deg); }
-  100% { transform: scale(1) rotate(0deg); }
+.card.epic {
+  border: 2px solid #ff69b4;
+  background: linear-gradient(135deg, #800080, #ff1493);
 }
 
-/* レアリティ演出 */
-.rare {
-  border: 2px solid #3b82f6;
-  background: #eff6ff;
-}
-.epic {
-  border: 2px solid #a855f7;
-  background: #f3e8ff;
-}
-.legendary {
-  border: 2px solid #f59e0b;
-  background: #fef3c7;
+.card.rare {
+  border: 2px solid #00ced1;
+  background: linear-gradient(135deg, #007070, #20b2aa);
 }
 
-/* フラッシュ効果 */
-.flash {
-  animation: flashEffect 0.6s ease-in-out;
-}
-@keyframes flashEffect {
-  0%   { background-color: white; }
-  50%  { background-color: #ffeaa7; }
-  100% { background-color: white; }
+.card .badge {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background-color: #ff4444;
+  padding: 2px 5px;
+  border-radius: 6px;
+  font-size: 0.7rem;
 }
 
-/* 所持アイテム表示 */
-.inventory-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-.inventory-list .card {
-  background: #fff;
-  position: relative;
-}
 .use-button {
   margin-top: 0.5rem;
-  font-size: 0.8rem;
-  background: #ef4444;
-  color: white;
-  border: none;
+  background-color: #ffd700;
+  color: #000;
   border-radius: 4px;
-  padding: 0.3rem 0.6rem;
-}
-.badge {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  background: #6366f1;
-  color: white;
-  font-size: 0.7rem;
-  padding: 2px 6px;
-  border-radius: 999px;
+  padding: 0.3rem 0.5rem;
 }
 
-/* テーブル */
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
 }
+
 th, td {
+  border: 1px solid #ffffff33;
   padding: 0.5rem;
-  border: 1px solid #ccc;
   text-align: left;
 }
 
-/* 統計結果エリア */
-#historyStats {
-  margin-top: 1rem;
-  font-size: 0.95rem;
-}
-#historyStats ul {
-  list-style: none;
-  padding: 0;
-}
-#historyStats li {
-  margin-bottom: 4px;
+.flash, .flash-rare {
+  animation: flash-bg 0.8s ease-in-out;
 }
 
-/* ローディング文字 */
-.rolling-text {
-  font-size: 1.5rem;
-  color: #999;
-  animation: blink 1s infinite;
+@keyframes flash-bg {
+  0% { background-color: #fff; }
+  100% { background-color: #0a1a2f; }
 }
-@keyframes blink {
-  50% { opacity: 0.3; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
