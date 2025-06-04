@@ -104,12 +104,19 @@ const inventoryArea = document.getElementById("inventory");
     return r ? r.chance : 0;
   }
 
-  function renderResults(names) {
-    resultArea.innerHTML = names.map(name => {
-      const rarityClass = getRewardChance(name) < 1 ? 'legendary' : getRewardChance(name) < 5 ? 'epic' : getRewardChance(name) < 10 ? 'rare' : '';
-      return `<div class="card ${rarityClass}">${name}</div>`;
-    }).join("");
-  }
+function renderResults(names) {
+  const slot = document.getElementById("gachaSlot"); // ←修正
+  slot.innerHTML = names.map(name => {
+    const rarityClass = getRewardChance(name) < 1
+      ? 'legendary'
+      : getRewardChance(name) < 5
+        ? 'epic'
+        : getRewardChance(name) < 10
+          ? 'rare'
+          : '';
+    return `<div class="card ${rarityClass}">${name}</div>`;
+  }).join("");
+}
 
   function renderInventory() {
     const inv = loadInventory();
