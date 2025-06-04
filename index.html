@@ -11,23 +11,31 @@
   <div class="container">
     <h1>🎰 <span>ガチャ報酬ゲーム</span></h1>
 
-    <button id="drawButton">抽選する</button>
-        <div style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem;">
-  <span id="ticketCountDisplay">🎫 残りチケット: 0</span>
-  <input type="number" id="ticketInput" min="1" placeholder="追加枚数" style="width: 80px;" />
-  <button id="addTicketBtn">追加</button>
-</div>
+    <!-- チケット操作 -->
+    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+      <button id="drawButton">抽選する</button>
+      <span id="ticketCountDisplay">🎫 残りチケット: 0</span>
+      <input type="number" id="ticketInput" placeholder="±枚数" style="width: 80px;" />
+      <button id="addTicketBtn">追加/減算</button>
+    </div>
+
+    <!-- ガチャ結果 -->
     <div class="gacha-slot" id="gachaSlot"></div>
-    
 
-
-
+    <!-- 所持アイテム -->
     <h2>🎒 所持アイテム</h2>
     <div id="inventory" class="inventory-list"></div>
     <div style="margin-top: 1rem;">
       <button id="resetBtn">🗑 リセット</button>
     </div>
 
+    <!-- 統計表示 -->
+    <h2>📊 ガチャ統計</h2>
+    <button id="showStatsBtn">📈 ガチャ履歴を見る</button>
+    <div id="historyStats" style="margin-top: 1rem;"></div>
+    <canvas id="historyChart" width="800" height="300" style="margin-top: 1rem;"></canvas>
+
+    <!-- 報酬一覧 -->
     <h2>🎁 報酬と確率一覧</h2>
     <table id="rewardTable">
       <thead>
@@ -41,6 +49,8 @@
   <audio id="seClick" src="./sounds/click.mp3"></audio>
   <audio id="seSpin" src="./sounds/spin.mp3"></audio>
   <audio id="seRare" src="./sounds/rare.mp3"></audio>
+  <!-- 超レアBGM -->
+  <audio id="seRareEvent" src="./sounds/rare_event.mp3"></audio>
 
   <script type="module" src="./script.js"></script>
 </body>
