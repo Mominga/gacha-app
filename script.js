@@ -19,6 +19,7 @@ const rewards = [
   { name: "全力掃除30分タイマー", chance: 0.8 },
   { name: "読書30分タイマー", chance: 0.8 },
   { name: "漫画喫茶に行く", chance: 0.6 },
+  { name: "編み物グッズを買う", chance: 0.6 },
   { name: "新しいChocozapに行く", chance: 0.3 },
   { name: "●●系カフェに行く", chance: 0.3 },
 
@@ -37,7 +38,6 @@ const rewards = [
   { name: "逆利き Day", chance: 0.05 },
   { name: "冷水シャワー Day", chance: 0.05 },
   { name: "日本語10回だけ Day", chance: 0.05 },
-  { name: "編み物グッズを買う", chance: 0.05 },
   { name: "○○教室ワークショップに参加", chance: 0.03 },
   { name: "海外旅行に行く", chance: 0.01 },
   { name: "24時間列車旅", chance: 0.01 }
