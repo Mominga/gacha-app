@@ -140,3 +140,23 @@ button:hover {
   background: #333;
   color: var(--accent);
 }
+@keyframes flashScreen {
+  0% { background: rgba(255, 255, 255, 0.8); }
+  100% { background: transparent; }
+}
+
+body.flash-rare {
+  animation: flashScreen 0.5s ease-out;
+}
+
+.card.rare-effect {
+  animation: spinPop 1s ease;
+  position: relative;
+  z-index: 10;
+}
+
+@keyframes spinPop {
+  0% { transform: scale(0.3) rotate(0deg); opacity: 0; }
+  50% { transform: scale(1.1) rotate(180deg); opacity: 1; }
+  100% { transform: scale(1) rotate(360deg); opacity: 1; }
+}
