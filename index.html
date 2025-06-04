@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ガチャ報酬ゲーム</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🎰 ガチャ報酬ゲーム</h1>
+    <button id="drawButton">抽選する</button>
+    <div class="gacha-slot" id="gachaSlot">
+      <!-- 結果カードが表示される -->
+    </div>
+    <div id="resultList" class="result-list"></div>
+  </div>
+
+<!-- 抽選結果 -->
+<div class="gacha-slot" id="gachaSlot"></div>
+
+<!-- 所持中の報酬 -->
+<h2>🎒 所持アイテム</h2>
+<div id="inventory" class="inventory-list"></div>
+
+  <!-- 効果音 -->
+  <audio id="seClick" src="sounds/click.mp3"></audio>
+  <audio id="seSpin" src="sounds/spin.mp3"></audio>
+  <audio id="seRare" src="sounds/rare.mp3"></audio>
+
+  <script src="script.js" type="module"></script>
+</body>
+</html>
