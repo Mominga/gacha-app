@@ -1,6 +1,4 @@
-// script.js パート1: 定数と初期データ、ユーティリティ関数など
-
-// 報酬リストとその確率（%）
+// script.js
 const rewards = [
   { name: "夕食を50%追加", chance: 15 },
   { name: "翌朝に鼻うがい", chance: 15 },
@@ -17,7 +15,7 @@ const rewards = [
   { name: "新しいChocozapに行く", chance: 0.2 }
 ];
 
-const MAX_HOLD = 2; // 所持上限
+const MAX_HOLD = 2;
 const STORAGE_KEY = 'gacha_inventory';
 
 function loadInventory() {
@@ -32,7 +30,6 @@ function playSound(type) {
   const seClick = document.getElementById("seClick");
   const seSpin = document.getElementById("seSpin");
   const seRare = document.getElementById("seRare");
-
   if (type === 'start') seClick?.play();
   if (type === 'rolling') seSpin?.play();
   if (type === 'rare') seRare?.play();
@@ -43,99 +40,66 @@ function preloadSounds() {
   document.getElementById("seSpin")?.load();
   document.getElementById("seRare")?.load();
 }
-window.addEventListener("click", preloadSounds, { once: true });
 
 function flashEffect() {
   document.body.classList.add("flash");
   setTimeout(() => document.body.classList.remove("flash"), 800);
 }
 
-// script.js パート2: メイン処理
+window.addEventListener("click", preloadSounds, { once: true });
 
-document.addEventListener("DOMContentLoaded", () => {
-  const gachaBtn = document.getElementById("drawButton");
-  const resultArea = document.getElementById("gachaSlot");
-const inventoryArea = document.getElementById("inventory");
-
-
-  renderInventory();
-
-  gachaBtn.addEventListener("click", () => {
-    playSound("start");
-    flashEffect();
-    gachaBtn.disabled = true;
-    resultArea.innerHTML = '<div class="rolling-text">抽選中...</div>';
-    playSound("rolling");
-
-    setTimeout(() => {
-      const results = [];
-      for (let i = 0; i < 5; i++) {
-        results.push(drawReward());
-      }
-      const inv = loadInventory();
-      const gained = [];
-      results.forEach(name => {
-        const count = inv.filter(item => item === name).length;
-        if (count < MAX_HOLD) {
-          inv.push(name);
-          gained.push(name);
-          if (getRewardChance(name) < 10) playSound("rare");
-        }
-      });
-      saveInventory(inv);
-      renderResults(gained);
-      renderInventory();
-      gachaBtn.disabled = false;
-    }, 1800);
-  });
-
-  function drawReward() {
-    const roll = Math.random() * 100;
-    let cumulative = 0;
-    for (const reward of rewards) {
-      cumulative += reward.chance;
-      if (roll < cumulative) return reward.name;
-    }
-    return rewards[rewards.length - 1].name;
+function drawReward() {
+  const roll = Math.random() * 100;
+  let cumulative = 0;
+  for (const reward of rewards) {
+    cumulative += reward.chance;
+    if (roll < cumulative) return reward.name;
   }
+  return rewards[rewards.length - 1].name;
+}
 
-  function getRewardChance(name) {
-    const r = rewards.find(r => r.name === name);
-    return r ? r.chance : 0;
-  }
+function getRewardChance(name) {
+  const r = rewards.find(r => r.name === name);
+  return r ? r.chance : 0;
+}
 
 function renderResults(names) {
-  const slot = document.getElementById("gachaSlot"); // ←修正
-  slot.innerHTML = names.map(name => {
-    const rarityClass = getRewardChance(name) < 1
-      ? 'legendary'
-      : getRewardChance(name) < 5
-        ? 'epic'
-        : getRewardChance(name) < 10
-          ? 'rare'
-          : '';
+  const resultArea = document.getElementById("gachaSlot");
+  resultArea.innerHTML = names.map(name => {
+    const rarityClass = getRewardChance(name) < 1 ? 'legendary' : getRewardChance(name) < 5 ? 'epic' : getRewardChance(name) < 10 ? 'rare' : '';
     return `<div class="card ${rarityClass}">${name}</div>`;
   }).join("");
 }
 
-  function renderInventory() {
-    const inv = loadInventory();
-    const countMap = {};
-    inv.forEach(name => countMap[name] = (countMap[name] || 0) + 1);
-    const html = Object.entries(countMap).map(([name, count]) =>
-      `<div class="card">${name}${count > 1 ? ` <span class="badge">×${count}</span>` : ''}</div>`
-    ).join("") || '<div class="small">まだ報酬はありません。</div>';
-    inventoryArea.innerHTML = html;
-  }
-});
-
-
-// script.js パート3: サウンド読み込みのプレロード処理と演出補足
-
-// サウンドプリロード（ユーザー操作後に再生をスムーズに）
-// ビジュアル演出
-function flashEffect() {
-  document.body.classList.add("flash");
-  setTimeout(() => document.body.classList.remove("flash"), 800);
+function renderInventory() {
+  const inventoryArea = document.getElementById("inventory");
+  const inv = loadInventory();
+  const countMap = {};
+  inv.forEach(name => countMap[name] = (countMap[name] || 0) + 1);
+  const html = Object.entries(countMap).map(([name, count]) => {
+    return `<div class="card">${name}<span class="badge">×${count}</span>
+              <button onclick="consumeItem('${name.replace(/'/g, "\\'")}')">使用する</button>
+            </div>`;
+  }).join("") || '<div class="small">まだ報酬はありません。</div>';
+  inventoryArea.innerHTML = html;
 }
 
+function consumeItem(name) {
+  const inv = loadInventory();
+  const index = inv.indexOf(name);
+  if (index !== -1) {
+    inv.splice(index, 1);
+    saveInventory(inv);
+    renderInventory();
+  }
+}
+
+function resetInventory() {
+  localStorage.removeItem(STORAGE_KEY);
+  renderInventory();
+}
+
+function renderRewardTable() {
+  const table = document.querySelector("#rewardTable tbody");
+  table.innerHTML = rewards.map(r => `<tr><td>${r.name}</td><td>${r.chance}</td></tr>`).join("");
+}
