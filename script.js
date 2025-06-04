@@ -13,19 +13,19 @@ const rewards = [
   { name: "食器を洗う", chance: 6 },
   { name: "お風呂に入る (有効48h)", chance: 6 },
 
-  // ✨ レア（合計 約7.2）
+  // ✨ レア（合計 5.8）
   { name: "散歩に行く", chance: 1.0 },
-  { name: "フリマアプリに不用品を出品", chance: 0.8 },
+  { name: "フリマアプリに不用品を出品", chance: 1.0 },
   { name: "全力掃除30分タイマー", chance: 0.8 },
+  { name: "読書30分タイマー", chance: 0.8 },
   { name: "漫画喫茶に行く", chance: 0.6 },
-  { name: "ボランティアDay", chance: 0.6 },
-  { name: "ゲーム1DAY", chance: 0.6 },
-  { name: "読書30分タイマー", chance: 0.6 },
-  { name: "新しいChocozapに行く", chance: 0.6 },
-  { name: "●●系カフェに行く", chance: 0.6 },
+  { name: "新しいChocozapに行く", chance: 0.3 },
+  { name: "●●系カフェに行く", chance: 0.3 },
 
-  // 🌈 スーパーレア（合計 約1.1）
+  // 🌈 スーパーレア（合計 1.51）
   { name: "温泉に行く", chance: 0.2 },
+  { name: "ゲーム1DAY", chance: 0.2 },
+  { name: "ボランティアDay", chance: 0.1 },
   { name: "国内旅行", chance: 0.1 },
   { name: "グルメロシアンルーレット", chance: 0.1 },
   { name: "映画を鑑賞する", chance: 0.1 },
@@ -42,6 +42,7 @@ const rewards = [
   { name: "海外旅行に行く", chance: 0.01 },
   { name: "24時間列車旅", chance: 0.01 }
 ];
+
 
 
 const MAX_HOLD = 2;
