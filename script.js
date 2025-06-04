@@ -98,6 +98,27 @@ function getRewardChance(name) {
   return r ? r.chance : 0;
 }
 
+// --- チケット機能追加 ---
+
+const TICKET_KEY = 'gacha_ticket_count';
+
+// チケット残数取得・保存
+function loadTickets() {
+  return parseInt(localStorage.getItem(TICKET_KEY) || "0", 10);
+}
+function saveTickets(count) {
+  localStorage.setItem(TICKET_KEY, count.toString());
+}
+
+// 表示を更新
+function renderTicketDisplay() {
+  const el = document.getElementById("ticketCountDisplay");
+  const count = loadTickets();
+  el.textContent = `🎫 残りチケット: ${count}`;
+  const gachaBtn = document.getElementById("drawButton");
+  gachaBtn.disabled = count <= 0;
+}
+
 function renderInventory() {
   const inv = loadInventory();
   const countMap = {};
@@ -154,10 +175,36 @@ document.addEventListener("DOMContentLoaded", () => {
   const gachaBtn = document.getElementById("drawButton");
   const resetBtn = document.getElementById("resetBtn");
 
+  // チケット追加機能
+  const addTicketBtn = document.getElementById("addTicketBtn");
+  const ticketInput = document.getElementById("ticketInput");
+
+  addTicketBtn.addEventListener("click", () => {
+    const current = loadTickets();
+    const add = parseInt(ticketInput.value, 10);
+    if (!isNaN(add) && add > 0) {
+      saveTickets(current + add);
+      renderTicketDisplay();
+      ticketInput.value = "";
+    }
+  });
+
   renderInventory();
   renderRewardTable();
+  renderTicketDisplay(); // ← 忘れず呼び出し！
 
   gachaBtn.addEventListener("click", () => {
+    const currentTickets = loadTickets();
+    if (currentTickets <= 0) {
+      alert("チケットが足りません！");
+      gachaBtn.disabled = true;
+      return;
+    }
+
+    // チケット消費処理
+    saveTickets(currentTickets - 1);
+    renderTicketDisplay();
+
     playSound("start");
     flashEffect();
     gachaBtn.disabled = true;
@@ -193,11 +240,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1800);
   });
 
-  // 👇 これを追加！
   resetBtn.addEventListener("click", () => {
     window.resetInventory();
   });
 });
+
 
 // デバッグ用：drawRewardをグローバル公開
 window.drawReward = drawReward;
