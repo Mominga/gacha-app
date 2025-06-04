@@ -1,163 +1,36 @@
-:root {
-  --bg: #111827;
-  --card-bg: #1f2937;
-  --text: #f9fafb;
-  --accent: #eab308;
-  --rare: #ec4899;
-  --epic: #8b5cf6;
-  --legendary: #f97316;
-  --border: #374151;
-}
+// DOMContentLoaded
 
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  min-height: 100vh;
-  padding: 2rem 1rem;
-}
+document.addEventListener("DOMContentLoaded", () => {
+  const gachaBtn = document.getElementById("drawButton");
+  renderInventory();
+  renderRewardTable();
 
-h1 {
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
-  color: var(--accent);
-}
+  gachaBtn.addEventListener("click", () => {
+    playSound("start");
+    flashEffect();
+    gachaBtn.disabled = true;
+    document.getElementById("gachaSlot").innerHTML = '<div class="rolling-text">抽選中...</div>';
+    playSound("rolling");
 
-#gachaButton {
-  background: linear-gradient(135deg, #facc15, #f59e0b);
-  border: none;
-  padding: 1rem 2.5rem;
-  font-size: 1.2rem;
-  border-radius: 9999px;
-  color: #000;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(255, 204, 0, 0.4);
-  transition: transform 0.2s ease;
-}
-#gachaButton:hover {
-  transform: scale(1.05);
-}
-
-#resultArea {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 2rem;
-  gap: 1rem;
-}
-
-.card {
-  width: 130px;
-  height: 180px;
-  border-radius: 16px;
-  background: var(--card-bg);
-  border: 3px solid var(--border);
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-weight: bold;
-  font-size: 1rem;
-  color: var(--text);
-  padding: 1rem;
-  animation: popIn 0.5s ease forwards;
-  position: relative;
-}
-
-/* Rarity color effects */
-.card.rare {
-  border-color: var(--rare);
-  box-shadow: 0 0 12px var(--rare);
-}
-.card.epic {
-  border-color: var(--epic);
-  box-shadow: 0 0 14px var(--epic);
-}
-.card.legendary {
-  border-color: var(--legendary);
-  box-shadow: 0 0 16px var(--legendary);
-}
-
-/* Simple animation */
-@keyframes popIn {
-  from {
-    transform: scale(0.6);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-/* Flash background for rare drop */
-.flash-rare {
-  position: fixed;
-  inset: 0;
-  background: rgba(236, 72, 153, 0.4);
-  pointer-events: none;
-  animation: flash .7s ease-out forwards;
-  z-index: 9999;
-}
-
-@keyframes flash {
-  0%   { opacity: 0; }
-  30%  { opacity: 1; }
-  100% { opacity: 0; }
-}
-body.flash {
-  animation: flashAnim 0.8s ease-out;
-}
-@keyframes flashAnim {
-  0%   { background-color: #fffbcc; }
-  100% { background-color: var(--bg); }
-}
-.badge {
-  font-size: 0.8rem;
-  background: var(--accent);
-  color: #000;
-  padding: 0.2rem 0.5rem;
-  border-radius: 9999px;
-  margin-left: 0.5rem;
-}
-/* 抽選結果を横並びに表示 */
-#gachaSlot {
-  display: flex;
-  justify-content: center;
-  flex-wrap: nowrap;
-  gap: 1rem;
-  margin-top: 2rem;
-  flex-shrink: 0;
-}
-
-/* 所持アイテムタイトル */
-h2 {
-  margin-top: 2rem;
-  font-size: 1.2rem;
-}
-
-/* 所持アイテムエリア */
-#inventory {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
-  max-width: 90vw;
-  margin-top: 1rem;
-}
-
-/* 所持アイテム用カードサイズを小さく */
-#inventory .card {
-  width: 100px;
-  height: 120px;
-  font-size: 0.75rem;
-  padding: 0.6rem;
-}
+    setTimeout(() => {
+      const results = [];
+      for (let i = 0; i < 5; i++) {
+        results.push(drawReward());
+      }
+      const inv = loadInventory();
+      const gained = [];
+      results.forEach(name => {
+        const count = inv.filter(item => item === name).length;
+        if (count < MAX_HOLD) {
+          inv.push(name);
+          gained.push(name);
+          if (getRewardChance(name) < 10) playSound("rare");
+        }
+      });
+      saveInventory(inv);
+      renderResults(gained);
+      renderInventory();
+      gachaBtn.disabled = false;
+    }, 1800);
+  });
+});
