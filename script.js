@@ -238,42 +238,46 @@ document.addEventListener("DOMContentLoaded", () => {
     playSound("rolling");
 
     setTimeout(() => {
-      const results = [];
-      const nameCount = {};
-
-      while (results.length < 5) {
-        const name = drawReward();
-        const currentCount = nameCount[name] || 0;
-        if (currentCount < 2) {
-          results.push(name);
-          nameCount[name] = currentCount + 1;
-        }
+  try {
+    const results = [];
+    const nameCount = {};
+    while (results.length < 5) {
+      const name = drawReward();
+      const currentCount = nameCount[name] || 0;
+      if (currentCount < 2) {
+        results.push(name);
+        nameCount[name] = currentCount + 1;
       }
+    }
 
-      const inv = loadInventory();
-      const inventorySnapshot = {};
-      inv.forEach(name => inventorySnapshot[name] = (inventorySnapshot[name] || 0) + 1);
+    const inv = loadInventory();
+    const inventorySnapshot = {};
+    inv.forEach(name => inventorySnapshot[name] = (inventorySnapshot[name] || 0) + 1);
 
-      const gained = [];
-      results.forEach(name => {
-        const count = inventorySnapshot[name] || 0;
-        if (count < MAX_HOLD) {
-          inv.push(name);
-          inventorySnapshot[name] = count + 1;
-          gained.push(name);
-          if (getRewardChance(name) <= 5) playSound("rare");
-        } else {
-          gained.push(name);
-        }
-      });
+    const gained = [];
+    results.forEach(name => {
+      const count = inventorySnapshot[name] || 0;
+      if (count < MAX_HOLD) {
+        inv.push(name);
+        inventorySnapshot[name] = count + 1;
+        gained.push(name);
+        if (getRewardChance(name) <= 5) playSound("rare");
+      } else {
+        gained.push(name);
+      }
+    });
 
-      saveInventory(inv);
-      renderResults(gained, inventorySnapshot);
-      renderInventory();
-      logHistory(gained);
-      renderStats();
-      gachaBtn.disabled = false;
-    }, 1800);
+    saveInventory(inv);
+    renderResults(gained, inventorySnapshot);
+    renderInventory();
+    logHistory(gained);
+    renderStats();
+
+  } finally {
+    gachaBtn.disabled = false;
+  }
+}, 1800);
+
   });
 
   // 所持アイテムリセット
