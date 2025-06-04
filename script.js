@@ -2,14 +2,14 @@
 
 // --- 報酬データと確率設定 ---
 const rewards = [
-  { name: "夕食を50%追加", chance: 45 },
-  { name: "翌朝に鼻うがい", chance: 45 },
+  { name: "夕食を50%追加", chance: 20 },
+  { name: "翌朝に鼻うがい", chance: 20 },
   { name: "お風呂に入る (有効48h)", chance: 20 },
   { name: "顔を洗う", chance: 20 },
   { name: "食器を洗う", chance: 20 },
   { name: "洗濯機を回す", chance: 20 },
   { name: "アイマスクを使う", chance: 30 },
-  { name: "耳栓を使う", chance: 30 },
+  { name: "耳栓を使う", chance: 20 },
   { name: "お菓子を食べる", chance: 20 },
   { name: "ギュ (ハグ) をする", chance: 20 },
   { name: "散歩に行く", chance: 4 },
