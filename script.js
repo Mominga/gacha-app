@@ -152,6 +152,7 @@ window.resetInventory = function() {
 // --- DOMContentLoaded ---
 document.addEventListener("DOMContentLoaded", () => {
   const gachaBtn = document.getElementById("drawButton");
+  const resetBtn = document.getElementById("resetBtn");
 
   renderInventory();
   renderRewardTable();
@@ -191,4 +192,10 @@ document.addEventListener("DOMContentLoaded", () => {
       gachaBtn.disabled = false;
     }, 1800);
   });
+
+  // 👇 これを追加！
+  resetBtn.addEventListener("click", () => {
+    window.resetInventory();
+  });
 });
+
