@@ -130,7 +130,7 @@ function renderResults(names) {
     return `
       <div class="card ${rarityClass}" style="opacity: ${isMaxed ? '0.4' : '1'}; position: relative;">
         ${name}
-        ${isMaxed ? '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:white;background-color:rgba(0,0,0,0.6);padding:0.2rem 0.5rem;border-radius:6px;font-size:0.8rem">所持数上限のため獲得無し</div>' : ''}
+        ${isMaxed ? '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background-color:rgba(0,0,0,0.6);padding:0.2rem 0.5rem;border-radius:6px;font-size:0.8rem;font-weight:bold;color:#f43f5e">所持数上限のため獲得無し</div>' : ''}
       </div>`;
   }).join("");
 }
@@ -190,5 +190,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1800);
   });
 });
-window.useItem = useItem;
-
