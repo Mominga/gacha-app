@@ -1,24 +1,23 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ガチャ報酬ゲーム</title>
-  <link rel="stylesheet" href="./style.css">
-  <link rel="icon" href="./path/to/favicon.ico" type="image/x-icon">
-
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="icon" href="./favicon.ico" />
 </head>
 <body>
   <div class="container">
-    <h1>🎰 ガチャ報酬ゲーム</h1>
-    <button id="drawButton">抽選する</button>
+    <h1>🎰 <span>ガチャ報酬ゲーム</span></h1>
 
-    <div id="gachaSlot" class="gacha-slot"></div>
+    <button id="drawButton">抽選する</button>
+    <div class="gacha-slot" id="gachaSlot"></div>
 
     <h2>🎒 所持アイテム</h2>
     <div id="inventory" class="inventory-list"></div>
     <div style="margin-top: 1rem;">
-      <button onclick="resetInventory()">🗑 リセット</button>
+      <button id="resetBtn">🗑 リセット</button>
     </div>
 
     <h2>🎁 報酬と確率一覧</h2>
@@ -32,9 +31,9 @@
 
   <!-- 効果音 -->
   <audio id="seClick" src="./sounds/click.mp3"></audio>
-  <audio id="seSpin"  src="./sounds/spin.mp3"></audio>
-  <audio id="seRare"  src="./sounds/rare.mp3"></audio>
+  <audio id="seSpin" src="./sounds/spin.mp3"></audio>
+  <audio id="seRare" src="./sounds/rare.mp3"></audio>
 
-  <script src="./script.js" type="module"></script>
+  <script type="module" src="./script.js"></script>
 </body>
 </html>
