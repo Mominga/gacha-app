@@ -183,17 +183,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // チケット追加機能
   const addTicketBtn = document.getElementById("addTicketBtn");
-  const ticketInput = document.getElementById("ticketInput");
+const ticketInput = document.getElementById("ticketInput");
 
-  addTicketBtn.addEventListener("click", () => {
-    const current = loadTickets();
-    const add = parseInt(ticketInput.value, 10);
-    if (!isNaN(add) && add > 0) {
-      saveTickets(current + add);
-      renderTicketDisplay();
-      ticketInput.value = "";
-    }
-  });
+addTicketBtn.addEventListener("click", () => {
+  const current = loadTickets();
+  const delta = parseInt(ticketInput.value, 10);
+
+  if (!isNaN(delta) && delta !== 0) {
+    const updated = Math.max(current + delta, 0); // マイナス入力対応＆0未満防止
+    saveTickets(updated);
+    renderTicketDisplay();
+    ticketInput.value = "";
+  }
+});
+
 
   renderInventory();
   renderRewardTable();
