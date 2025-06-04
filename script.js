@@ -114,13 +114,24 @@ function renderInventory() {
 
 function renderResults(names) {
   const resultArea = document.getElementById("gachaSlot");
+  const inv = loadInventory();
+  const countMap = {};
+  inv.forEach(name => countMap[name] = (countMap[name] || 0) + 1);
+
   resultArea.innerHTML = names.map(name => {
     const rarity = getRewardChance(name);
     let rarityClass = '';
     if (rarity <= 0.25) rarityClass = 'legendary';
     else if (rarity <= 0.5) rarityClass = 'epic';
     else if (rarity < 5) rarityClass = 'rare';
-    return `<div class="card ${rarityClass}">${name}</div>`;
+
+    const isMaxed = countMap[name] >= MAX_HOLD;
+
+    return `
+      <div class="card ${rarityClass}" style="opacity: ${isMaxed ? '0.4' : '1'}; position: relative;">
+        ${name}
+        ${isMaxed ? '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:white;background-color:rgba(0,0,0,0.6);padding:0.2rem 0.5rem;border-radius:6px;font-size:0.8rem">所持数上限のため獲得無し</div>' : ''}
+      </div>`;
   }).join("");
 }
 
@@ -135,7 +146,7 @@ function useItem(encodedName) {
   }
 }
 
-function resetInventory() {
+window.resetInventory = function() {
   localStorage.removeItem(STORAGE_KEY);
   renderInventory();
 }
@@ -167,6 +178,8 @@ document.addEventListener("DOMContentLoaded", () => {
           inv.push(name);
           gained.push(name);
           if (getRewardChance(name) <= 5) playSound("rare");
+        } else {
+          gained.push(name); // still show even if over limit
         }
       });
 
