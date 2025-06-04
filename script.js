@@ -1,4 +1,6 @@
-// script.js
+// script.js – ガチャ報酬ゲーム（完全版）
+
+// --- 報酬データと確率設定 ---
 const rewards = [
   { name: "夕食を50%追加", chance: 15 },
   { name: "翌朝に鼻うがい", chance: 15 },
@@ -30,6 +32,7 @@ function playSound(type) {
   const seClick = document.getElementById("seClick");
   const seSpin = document.getElementById("seSpin");
   const seRare = document.getElementById("seRare");
+
   if (type === 'start') seClick?.play();
   if (type === 'rolling') seSpin?.play();
   if (type === 'rare') seRare?.play();
@@ -40,13 +43,22 @@ function preloadSounds() {
   document.getElementById("seSpin")?.load();
   document.getElementById("seRare")?.load();
 }
+window.addEventListener("click", preloadSounds, { once: true });
 
 function flashEffect() {
   document.body.classList.add("flash");
   setTimeout(() => document.body.classList.remove("flash"), 800);
 }
 
-window.addEventListener("click", preloadSounds, { once: true });
+function renderRewardTable() {
+  const tbody = document.querySelector("#rewardTable tbody");
+  tbody.innerHTML = rewards.map(r => `
+    <tr>
+      <td>${r.name}</td>
+      <td>${r.chance}</td>
+    </tr>
+  `).join("");
+}
 
 function drawReward() {
   const roll = Math.random() * 100;
@@ -63,32 +75,39 @@ function getRewardChance(name) {
   return r ? r.chance : 0;
 }
 
+function renderInventory() {
+  const inv = loadInventory();
+  const countMap = {};
+  inv.forEach(name => countMap[name] = (countMap[name] || 0) + 1);
+  const inventoryArea = document.getElementById("inventory");
+  const html = Object.entries(countMap).map(([name, count]) => `
+    <div class="card">
+      ${name}
+      ${count > 1 ? `<span class="badge">×${count}</span>` : ''}
+      <button class="use-button" onclick="useItem('${encodeURIComponent(name)}')">使用する</button>
+    </div>
+  `).join("") || '<div class="small">まだ報酬はありません。</div>';
+  inventoryArea.innerHTML = html;
+}
+
 function renderResults(names) {
   const resultArea = document.getElementById("gachaSlot");
   resultArea.innerHTML = names.map(name => {
-    const rarityClass = getRewardChance(name) < 1 ? 'legendary' : getRewardChance(name) < 5 ? 'epic' : getRewardChance(name) < 10 ? 'rare' : '';
+    const rarity = getRewardChance(name);
+    let rarityClass = '';
+    if (rarity < 1) rarityClass = 'legendary';
+    else if (rarity < 5) rarityClass = 'epic';
+    else if (rarity < 10) rarityClass = 'rare';
     return `<div class="card ${rarityClass}">${name}</div>`;
   }).join("");
 }
 
-function renderInventory() {
-  const inventoryArea = document.getElementById("inventory");
+function useItem(encodedName) {
+  const name = decodeURIComponent(encodedName);
   const inv = loadInventory();
-  const countMap = {};
-  inv.forEach(name => countMap[name] = (countMap[name] || 0) + 1);
-  const html = Object.entries(countMap).map(([name, count]) => {
-    return `<div class="card">${name}<span class="badge">×${count}</span>
-              <button onclick="consumeItem('${name.replace(/'/g, "\\'")}')">使用する</button>
-            </div>`;
-  }).join("") || '<div class="small">まだ報酬はありません。</div>';
-  inventoryArea.innerHTML = html;
-}
-
-function consumeItem(name) {
-  const inv = loadInventory();
-  const index = inv.indexOf(name);
-  if (index !== -1) {
-    inv.splice(index, 1);
+  const idx = inv.indexOf(name);
+  if (idx !== -1) {
+    inv.splice(idx, 1);
     saveInventory(inv);
     renderInventory();
   }
@@ -99,7 +118,40 @@ function resetInventory() {
   renderInventory();
 }
 
-function renderRewardTable() {
-  const table = document.querySelector("#rewardTable tbody");
-  table.innerHTML = rewards.map(r => `<tr><td>${r.name}</td><td>${r.chance}</td></tr>`).join("");
-}
+// --- DOMContentLoaded ---
+document.addEventListener("DOMContentLoaded", () => {
+  const gachaBtn = document.getElementById("drawButton");
+
+  renderInventory();
+  renderRewardTable();
+
+  gachaBtn.addEventListener("click", () => {
+    playSound("start");
+    flashEffect();
+    gachaBtn.disabled = true;
+    const resultArea = document.getElementById("gachaSlot");
+    resultArea.innerHTML = '<div class="rolling-text">抽選中...</div>';
+    playSound("rolling");
+
+    setTimeout(() => {
+      const results = [];
+      for (let i = 0; i < 5; i++) results.push(drawReward());
+
+      const inv = loadInventory();
+      const gained = [];
+      results.forEach(name => {
+        const count = inv.filter(item => item === name).length;
+        if (count < MAX_HOLD) {
+          inv.push(name);
+          gained.push(name);
+          if (getRewardChance(name) < 10) playSound("rare");
+        }
+      });
+
+      saveInventory(inv);
+      renderResults(gained);
+      renderInventory();
+      gachaBtn.disabled = false;
+    }, 1800);
+  });
+});
