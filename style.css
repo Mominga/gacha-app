@@ -1,101 +1,53 @@
 body {
-  font-family: "Arial", sans-serif;
-  background-color: #0d1b2a;
-  color: white;
-  margin: 0;
-  padding: 1em;
+  background-color: #0a0f2e;
+  color: #fff;
+  font-family: sans-serif;
 }
 
 .container {
   max-width: 700px;
-  margin: 0 auto;
+  margin: auto;
+  padding: 10px;
 }
 
-.title {
-  text-align: center;
-  font-size: 2em;
-  margin-bottom: 1em;
-}
-
-.controls {
-  margin-bottom: 1em;
-}
-
-#gachaSlot {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin: 1em 0;
-}
-
-.card {
-  background: #1b263b;
-  border-radius: 10px;
-  padding: 0.5em;
-  margin: 0.4em;
-  text-align: center;
-  width: 30%;
-  font-size: 0.9em;
-  position: relative;
-}
-
-.card .badge {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: #e63946;
-  color: white;
-  font-size: 0.7em;
-  padding: 2px 5px;
-  border-radius: 0 10px 0 10px;
+button {
+  padding: 10px 20px;
+  font-size: 1rem;
 }
 
 .highlight-shake {
-  background-color: #fca311;
-  font-size: 1.4em;
-  padding: 0.8em 1.5em;
-  color: white;
+  background-color: #fdd835;
+  color: #000;
   border: none;
-  border-radius: 10px;
-  animation: shake 2s infinite;
-  margin: 1em auto;
-  display: block;
-  cursor: pointer;
+  animation: shake 0.4s infinite;
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  50% { transform: translateX(4px); }
-  75% { transform: translateX(-2px); }
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
 
 .inventory.grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.6em;
+  gap: 6px;
+  font-size: 0.85rem;
 }
 
-.small-button {
-  font-size: 0.8em;
-  padding: 0.3em 0.8em;
-  margin-left: 0.5em;
-  background-color: #577590;
-  color: white;
-  border: none;
-  border-radius: 5px;
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 1.5em;
-}
-
-.history-stats {
-  margin-top: 2em;
-  background-color: #1b263b;
-  padding: 1em;
-  border-radius: 10px;
+.inventory .card {
+  padding: 6px;
+  background: #1c1f3a;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  text-align: center;
+  word-break: break-word;
 }
