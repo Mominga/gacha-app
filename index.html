@@ -17,13 +17,15 @@
       <button id="addTicketBtn">チケット変更</button>
     </div>
 
-    <button id="drawButton">ガチャを回す！</button>
-    <button id="resetBtn">所持品リセット</button>
-    <button id="showStatsBtn">📊 統計を見る</button>
+    <button id="drawButton" class="highlight-shake">ガチャを回す！</button>
 
     <div id="gachaSlot" class="gacha-slot"></div>
-    <h2>🎁 所持アイテム</h2>
-    <div id="inventory" class="inventory"></div>
+
+    <div class="section-header">
+      <h2>🎁 所持アイテム</h2>
+      <button id="resetBtn" class="small-button">リセット</button>
+    </div>
+    <div id="inventory" class="inventory grid"></div>
 
     <h2>📜 報酬一覧</h2>
     <table id="rewardTable">
@@ -32,6 +34,7 @@
     </table>
 
     <div id="historyStats" class="history-stats"></div>
+    <button id="resetStatsBtn" class="small-button">統計をリセット</button>
     <canvas id="historyChart" width="400" height="200"></canvas>
 
     <audio id="seClick" src="./sounds/click.mp3"></audio>
