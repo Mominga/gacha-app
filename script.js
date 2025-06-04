@@ -326,6 +326,12 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTicketDisplay();
 });
 
+function logHistory(rewards) {
+  const history = JSON.parse(localStorage.getItem("gacha_history") || "[]");
+  const updated = [...history, ...rewards];
+  const limited = updated.slice(-100); // 最新100件に制限
+  localStorage.setItem("gacha_history", JSON.stringify(limited));
+}
 
 
 // デバッグ用：drawRewardをグローバル公開
