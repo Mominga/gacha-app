@@ -142,23 +142,38 @@ function renderInventory() {
 
 function renderResults(names, inventorySnapshot) {
   const resultArea = document.getElementById("gachaSlot");
-  const countMap = { ...inventorySnapshot };
-  resultArea.innerHTML = names.map(name => {
+  resultArea.innerHTML = "";
+
+  names.forEach(name => {
     const rarity = getRewardChance(name);
-    let rarityClass = '';
-    if (rarity <= 0.25) rarityClass = 'legendary';
-    else if (rarity <= 0.5) rarityClass = 'epic';
-    else if (rarity < 5) rarityClass = 'rare';
+    let rarityClass = "";
+    let extraEffectClass = "";
+
+    if (rarity <= 0.01) {
+      rarityClass = "legendary";
+      extraEffectClass = "rare-effect";
+      document.body.classList.add("flash-rare");
+      setTimeout(() => document.body.classList.remove("flash-rare"), 800);
+      const rareAudio = new Audio("./sounds/rare_event.mp3");
+      rareAudio.play();
+    } else if (rarity <= 0.05) {
+      rarityClass = "epic";
+    } else if (rarity < 1) {
+      rarityClass = "rare";
+    }
 
     const isMaxed = (inventorySnapshot[name] || 0) >= MAX_HOLD;
-
-    return `
-      <div class="card ${rarityClass}" style="opacity: ${isMaxed ? '0.4' : '1'}; position: relative;">
-        ${name}
-        ${isMaxed ? '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background-color:rgba(0,0,0,0.6);padding:0.2rem 0.5rem;border-radius:6px;font-size:0.8rem;font-weight:bold;color:#f43f5e;text-shadow: 0 0 2px black;">所持数上限のため獲得無し</div>' : ''}
-      </div>`;
-  }).join("");
+    const card = document.createElement("div");
+    card.className = `card ${rarityClass} ${extraEffectClass}`;
+    card.style.opacity = isMaxed ? '0.4' : '1';
+    card.innerHTML = `
+      ${name}
+      ${isMaxed ? '<div class="badge">所持数上限</div>' : ''}
+    `;
+    resultArea.appendChild(card);
+  });
 }
+
 
 window.useItem = function(encodedName) {
   const name = decodeURIComponent(encodedName);
@@ -180,28 +195,23 @@ window.resetInventory = function() {
 document.addEventListener("DOMContentLoaded", () => {
   const gachaBtn = document.getElementById("drawButton");
   const resetBtn = document.getElementById("resetBtn");
-
-  // チケット追加機能
   const addTicketBtn = document.getElementById("addTicketBtn");
-const ticketInput = document.getElementById("ticketInput");
+  const ticketInput = document.getElementById("ticketInput");
+  const statsBtn = document.getElementById("showStatsBtn");
 
-addTicketBtn.addEventListener("click", () => {
-  const current = loadTickets();
-  const delta = parseInt(ticketInput.value, 10);
+  // --- チケット追加/減算処理 ---
+  addTicketBtn.addEventListener("click", () => {
+    const current = loadTickets();
+    const delta = parseInt(ticketInput.value, 10);
+    if (!isNaN(delta) && delta !== 0) {
+      const updated = Math.max(current + delta, 0);
+      saveTickets(updated);
+      renderTicketDisplay();
+      ticketInput.value = "";
+    }
+  });
 
-  if (!isNaN(delta) && delta !== 0) {
-    const updated = Math.max(current + delta, 0); // マイナス入力対応＆0未満防止
-    saveTickets(updated);
-    renderTicketDisplay();
-    ticketInput.value = "";
-  }
-});
-
-
-  renderInventory();
-  renderRewardTable();
-  renderTicketDisplay(); // ← 忘れず呼び出し！
-
+  // --- 抽選処理 ---
   gachaBtn.addEventListener("click", () => {
     const currentTickets = loadTickets();
     if (currentTickets <= 0) {
@@ -210,13 +220,13 @@ addTicketBtn.addEventListener("click", () => {
       return;
     }
 
-    // チケット消費処理
     saveTickets(currentTickets - 1);
     renderTicketDisplay();
 
     playSound("start");
     flashEffect();
     gachaBtn.disabled = true;
+
     const resultArea = document.getElementById("gachaSlot");
     resultArea.innerHTML = '<div class="rolling-text">抽選中...</div>';
     playSound("rolling");
@@ -245,14 +255,77 @@ addTicketBtn.addEventListener("click", () => {
       saveInventory(inv);
       renderResults(gained, inventorySnapshot);
       renderInventory();
+      logHistory(gained); // 🔥 履歴保存
       gachaBtn.disabled = false;
     }, 1800);
   });
 
+  // --- リセット処理 ---
   resetBtn.addEventListener("click", () => {
     window.resetInventory();
   });
+
+  // --- 統計＆履歴ボタン処理 ---
+  statsBtn?.addEventListener("click", () => {
+    const history = JSON.parse(localStorage.getItem("gacha_history") || "[]");
+    const countMap = {};
+    let ultraRareCount = 0;
+
+    history.forEach(name => {
+      countMap[name] = (countMap[name] || 0) + 1;
+      if (getRewardChance(name) <= 0.2) ultraRareCount++;
+    });
+
+    const ssrRate = ((ultraRareCount / history.length) * 100).toFixed(2);
+    const display = Object.entries(countMap).sort((a, b) => b[1] - a[1]);
+
+    document.getElementById("historyStats").innerHTML = `
+      <p>履歴数: ${history.length} 件</p>
+      <p>SSR出現率: <strong>${ssrRate}%</strong></p>
+      <ul>${display.map(([name, count]) => `<li>${name}: ${count}回</li>`).join("")}</ul>
+    `;
+
+    if (!window.Chart) {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/chart.js";
+      script.onload = drawChart;
+      document.head.appendChild(script);
+    } else {
+      drawChart();
+    }
+
+    function drawChart() {
+      const ctx = document.getElementById("historyChart").getContext("2d");
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: display.map(([name]) => name),
+          datasets: [{
+            label: "出現回数",
+            data: display.map(([, count]) => count)
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: "ガチャ履歴統計" }
+          },
+          scales: {
+            x: { ticks: { maxRotation: 60, minRotation: 30, autoSkip: false } },
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+  });
+
+  // --- 初期描画 ---
+  renderInventory();
+  renderRewardTable();
+  renderTicketDisplay();
 });
+
 
 
 // デバッグ用：drawRewardをグローバル公開
