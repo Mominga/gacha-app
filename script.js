@@ -126,14 +126,6 @@ const inventoryArea = document.getElementById("inventory");
 // script.js パート3: サウンド読み込みのプレロード処理と演出補足
 
 // サウンドプリロード（ユーザー操作後に再生をスムーズに）
-function preloadSounds() {
-  ["seClick", "seSpin", "seRare"].forEach(id => {
-    const audio = document.getElementById(id);
-    audio?.load();
-  });
-}
-window.addEventListener("click", preloadSounds, { once: true });
-
 // ビジュアル演出
 function flashEffect() {
   document.body.classList.add("flash");
