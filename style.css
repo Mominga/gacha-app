@@ -1,25 +1,58 @@
 body {
-  background-color: #0a0f2e;
-  color: #fff;
-  font-family: sans-serif;
+  font-family: "Arial", sans-serif;
+  background-color: #0d1b2a;
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
-  max-width: 700px;
-  margin: auto;
-  padding: 10px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+input[type="number"] {
+  padding: 5px;
+  font-size: 1rem;
+  width: 100px;
 }
 
 button {
-  padding: 10px 20px;
+  padding: 8px 16px;
   font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background-color: #1976d2;
+  color: white;
+  transition: transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #1565c0;
+  transform: scale(1.05);
 }
 
 .highlight-shake {
-  background-color: #fdd835;
-  color: #000;
-  border: none;
+  font-size: 1.3rem;
+  background-color: #ff9800;
   animation: shake 0.4s infinite;
+  margin: 10px auto;
+  display: block;
 }
 
 @keyframes shake {
@@ -36,18 +69,144 @@ button {
   100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
 
+.section-header {
+  margin-top: 30px;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.small-button {
+  font-size: 0.9rem;
+  padding: 5px 10px;
+  background-color: #9e9e9e;
+  color: #000;
+}
+
 .inventory.grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
+  gap: 4px;
   font-size: 0.85rem;
 }
 
 .inventory .card {
-  padding: 6px;
-  background: #1c1f3a;
-  border: 1px solid #aaa;
-  border-radius: 6px;
+  padding: 4px;
+  margin: 0;
   text-align: center;
-  word-break: break-word;
+  background-color: #1c2b3a;
+  border-radius: 6px;
+  border: 1px solid #4f5d75;
+}
+
+.card .badge {
+  display: block;
+  font-size: 0.8rem;
+  margin-top: 4px;
+  color: #ffeb3b;
+}
+
+.use-button {
+  margin-top: 4px;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  background-color: #26a69a;
+  color: white;
+  border-radius: 3px;
+}
+
+#gachaSlot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  min-height: 120px;
+}
+
+#gachaSlot .card {
+  width: 120px;
+  padding: 10px;
+  text-align: center;
+  border-radius: 10px;
+  font-weight: bold;
+  transition: transform 0.3s ease;
+  background-color: #263238;
+  color: white;
+}
+
+#gachaSlot .legendary {
+  background-color: #ff5722;
+  color: white;
+  animation: pulse 1s infinite;
+}
+
+#gachaSlot .epic {
+  background-color: #9c27b0;
+  color: white;
+}
+
+#gachaSlot .rare {
+  background-color: #03a9f4;
+  color: white;
+}
+
+.rolling-text {
+  text-align: center;
+  font-size: 1.2rem;
+  margin: 20px 0;
+}
+
+#rewardTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+#rewardTable th, #rewardTable td {
+  border: 1px solid #bbb;
+  padding: 5px;
+  text-align: left;
+}
+
+#rewardTable th {
+  background-color: #37474f;
+  color: #fff;
+}
+
+#historyStats {
+  margin-top: 20px;
+  font-size: 0.9rem;
+}
+
+#historyStats ul {
+  padding-left: 20px;
+}
+
+canvas {
+  margin-top: 10px;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+/* レア演出のフラッシュ */
+.flash-rare {
+  animation: flash-bg 0.8s ease;
+}
+@keyframes flash-bg {
+  0% { background-color: #ffffff; }
+  100% { background-color: #0d1b2a; }
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 600px) {
+  .inventory.grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  #gachaSlot .card {
+    width: 100px;
+  }
 }
