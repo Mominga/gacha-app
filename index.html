@@ -1,39 +1,142 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ガチャ報酬ゲーム</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="container">
-    <h1>🎰 ガチャ報酬ゲーム</h1>
-    <button id="drawButton">抽選する</button>
-    <div class="gacha-slot" id="gachaSlot">
-      <!-- 結果カードが表示される -->
-    </div>
-    <div id="resultList" class="result-list"></div>
-  </div>
+// script.js
+const rewards = [
+  { name: "夕食を50%追加", chance: 15 },
+  { name: "翌朝に鼻うがい", chance: 15 },
+  { name: "お風呂に入る (有効48h)", chance: 10 },
+  { name: "顔を洗う", chance: 10 },
+  { name: "食器を洗う", chance: 10 },
+  { name: "洗濯機を回す", chance: 10 },
+  { name: "フリマアプリに不用品を出品", chance: 5 },
+  { name: "ゲーム1DAY", chance: 3 },
+  { name: "全力読書30分タイマー", chance: 3 },
+  { name: "映画を鑑賞する", chance: 2 },
+  { name: "ルーレット旅に行く", chance: 1 },
+  { name: "編み物グッズを買う", chance: 0.4 },
+  { name: "新しいChocozapに行く", chance: 0.2 }
+];
 
-<!-- 抽選結果 -->
-<div class="gacha-slot" id="gachaSlot"></div>
+const MAX_HOLD = 2;
+const STORAGE_KEY = 'gacha_inventory';
 
-<!-- 所持中の報酬 -->
-<h2>🎒 所持アイテム</h2>
-<div id="inventory" class="inventory-list"></div>
+function loadInventory() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+}
 
-  <!-- 効果音 -->
-  <audio id="seClick" src="sounds/click.mp3"></audio>
-  <audio id="seSpin" src="sounds/spin.mp3"></audio>
-  <audio id="seRare" src="sounds/rare.mp3"></audio>
+function saveInventory(inv) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(inv));
+}
 
-  <script src="script.js"></script>
-  <h2>🎁 報酬と確率一覧</h2>
-<table id="rewardTable">
-  <thead><tr><th>報酬</th><th>当選確率（%）</th></tr></thead>
-  <tbody></tbody>
-</table>
+function playSound(type) {
+  const seClick = document.getElementById("seClick");
+  const seSpin = document.getElementById("seSpin");
+  const seRare = document.getElementById("seRare");
+  if (type === 'start') seClick?.play();
+  if (type === 'rolling') seSpin?.play();
+  if (type === 'rare') seRare?.play();
+}
 
-</body>
-</html>
+function preloadSounds() {
+  document.getElementById("seClick")?.load();
+  document.getElementById("seSpin")?.load();
+  document.getElementById("seRare")?.load();
+}
+
+function flashEffect() {
+  document.body.classList.add("flash");
+  setTimeout(() => document.body.classList.remove("flash"), 800);
+}
+
+window.addEventListener("click", preloadSounds, { once: true });
+
+function drawReward() {
+  const roll = Math.random() * 100;
+  let cumulative = 0;
+  for (const reward of rewards) {
+    cumulative += reward.chance;
+    if (roll < cumulative) return reward.name;
+  }
+  return rewards[rewards.length - 1].name;
+}
+
+function getRewardChance(name) {
+  const r = rewards.find(r => r.name === name);
+  return r ? r.chance : 0;
+}
+
+function renderResults(names) {
+  const resultArea = document.getElementById("gachaSlot");
+  resultArea.innerHTML = names.map(name => {
+    const rarityClass = getRewardChance(name) < 1 ? 'legendary' : getRewardChance(name) < 5 ? 'epic' : getRewardChance(name) < 10 ? 'rare' : '';
+    return `<div class="card ${rarityClass}">${name}</div>`;
+  }).join("");
+}
+
+function renderInventory() {
+  const inventoryArea = document.getElementById("inventory");
+  const inv = loadInventory();
+  const countMap = {};
+  inv.forEach(name => countMap[name] = (countMap[name] || 0) + 1);
+  const html = Object.entries(countMap).map(([name, count]) => {
+    return `<div class="card">${name}<span class="badge">×${count}</span>
+              <button onclick="consumeItem('${name.replace(/'/g, "\\'")}')">使用する</button>
+            </div>`;
+  }).join("") || '<div class="small">まだ報酬はありません。</div>';
+  inventoryArea.innerHTML = html;
+}
+
+function consumeItem(name) {
+  const inv = loadInventory();
+  const index = inv.indexOf(name);
+  if (index !== -1) {
+    inv.splice(index, 1);
+    saveInventory(inv);
+    renderInventory();
+  }
+}
+
+function resetInventory() {
+  localStorage.removeItem(STORAGE_KEY);
+  renderInventory();
+}
+
+function renderRewardTable() {
+  const table = document.querySelector("#rewardTable tbody");
+  table.innerHTML = rewards.map(r => `<tr><td>${r.name}</td><td>${r.chance}</td></tr>`).join("");
+}
+
+// DOMContentLoaded
+
+document.addEventListener("DOMContentLoaded", () => {
+  const gachaBtn = document.getElementById("drawButton");
+  renderInventory();
+  renderRewardTable();
+
+  gachaBtn.addEventListener("click", () => {
+    playSound("start");
+    flashEffect();
+    gachaBtn.disabled = true;
+    document.getElementById("gachaSlot").innerHTML = '<div class="rolling-text">抽選中...</div>';
+    playSound("rolling");
+
+    setTimeout(() => {
+      const results = [];
+      for (let i = 0; i < 5; i++) {
+        results.push(drawReward());
+      }
+      const inv = loadInventory();
+      const gained = [];
+      results.forEach(name => {
+        const count = inv.filter(item => item === name).length;
+        if (count < MAX_HOLD) {
+          inv.push(name);
+          gained.push(name);
+          if (getRewardChance(name) < 10) playSound("rare");
+        }
+      });
+      saveInventory(inv);
+      renderResults(gained);
+      renderInventory();
+      gachaBtn.disabled = false;
+    }, 1800);
+  });
+});
