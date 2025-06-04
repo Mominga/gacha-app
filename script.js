@@ -199,3 +199,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// デバッグ用：drawRewardをグローバル公開
+window.drawReward = drawReward;
