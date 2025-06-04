@@ -1,113 +1,101 @@
 body {
-  background-color: #0a1a2f;
-  color: #ffffff;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
+  background-color: #0d1b2a;
+  color: white;
   margin: 0;
-  padding: 0;
+  padding: 1em;
 }
 
 .container {
-  max-width: 800px;
-  margin: auto;
-  padding: 1rem;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .title {
   text-align: center;
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-  color: #ffdd57;
+  font-size: 2em;
+  margin-bottom: 1em;
 }
 
-button {
-  background-color: #1f3b5b;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  margin: 0.5rem;
-  font-size: 1rem;
-  border-radius: 8px;
-  cursor: pointer;
+.controls {
+  margin-bottom: 1em;
 }
 
-button:hover {
-  background-color: #295080;
-}
-
-#gachaSlot, .inventory {
+#gachaSlot {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin: 1rem 0;
+  justify-content: center;
+  margin: 1em 0;
 }
 
 .card {
-  background-color: #1b2b3a;
-  padding: 1rem;
+  background: #1b263b;
   border-radius: 10px;
-  color: white;
+  padding: 0.5em;
+  margin: 0.4em;
   text-align: center;
-  min-width: 100px;
-  box-shadow: 0 0 5px #000000aa;
+  width: 30%;
+  font-size: 0.9em;
   position: relative;
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-.card.legendary {
-  border: 2px solid gold;
-  background: linear-gradient(135deg, #4b0082, #8b00ff);
-}
-
-.card.epic {
-  border: 2px solid #ff69b4;
-  background: linear-gradient(135deg, #800080, #ff1493);
-}
-
-.card.rare {
-  border: 2px solid #00ced1;
-  background: linear-gradient(135deg, #007070, #20b2aa);
 }
 
 .card .badge {
   position: absolute;
-  bottom: 5px;
-  right: 5px;
-  background-color: #ff4444;
+  top: 0;
+  right: 0;
+  background: #e63946;
+  color: white;
+  font-size: 0.7em;
   padding: 2px 5px;
-  border-radius: 6px;
-  font-size: 0.7rem;
+  border-radius: 0 10px 0 10px;
 }
 
-.use-button {
-  margin-top: 0.5rem;
-  background-color: #ffd700;
-  color: #000;
-  border-radius: 4px;
-  padding: 0.3rem 0.5rem;
+.highlight-shake {
+  background-color: #fca311;
+  font-size: 1.4em;
+  padding: 0.8em 1.5em;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  animation: shake 2s infinite;
+  margin: 1em auto;
+  display: block;
+  cursor: pointer;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-2px); }
 }
 
-th, td {
-  border: 1px solid #ffffff33;
-  padding: 0.5rem;
-  text-align: left;
+.inventory.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6em;
 }
 
-.flash, .flash-rare {
-  animation: flash-bg 0.8s ease-in-out;
+.small-button {
+  font-size: 0.8em;
+  padding: 0.3em 0.8em;
+  margin-left: 0.5em;
+  background-color: #577590;
+  color: white;
+  border: none;
+  border-radius: 5px;
 }
 
-@keyframes flash-bg {
-  0% { background-color: #fff; }
-  100% { background-color: #0a1a2f; }
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5em;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+.history-stats {
+  margin-top: 2em;
+  background-color: #1b263b;
+  padding: 1em;
+  border-radius: 10px;
 }
