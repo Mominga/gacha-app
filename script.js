@@ -153,33 +153,46 @@ function renderStats() {
   const history = JSON.parse(localStorage.getItem("gacha_history") || "[]");
   const countMap = {};
   let ultraRareCount = 0;
+
+  // 集計
   history.forEach(name => {
     countMap[name] = (countMap[name] || 0) + 1;
     if (getRewardChance(name) <= 0.2) ultraRareCount++;
   });
-  const ssrRate = ((ultraRareCount / history.length) * 100).toFixed(2);
+
+  const ssrRate = history.length > 0 ? ((ultraRareCount / history.length) * 100).toFixed(2) : "0.00";
   const display = Object.entries(countMap).sort((a, b) => b[1] - a[1]);
+
+  // HTML表示
   document.getElementById("historyStats").innerHTML = `
     <p>履歴数: ${history.length} 件</p>
     <p>SSR出現率: <strong>${ssrRate}%</strong></p>
-    <ul>${display.map(([n, c]) => `<li>${n}: ${c}回</li>`).join("")}</ul>
+    <ul>${display.map(([name, count]) => `<li>${name}: ${count}回</li>`).join("")}</ul>
   `;
+
+  // Chart.js の読み込みと描画
   if (!window.Chart) {
     const script = document.createElement("script");
     script.src = "https://cdn.jsdelivr.net/npm/chart.js";
-    script.onload = drawChart;
+    script.onload = () => drawChart(display);
     document.head.appendChild(script);
-  } else drawChart();
+  } else {
+    drawChart(display);
+  }
 
-  function drawChart() {
+  function drawChart(data) {
     const ctx = document.getElementById("historyChart").getContext("2d");
-    new Chart(ctx, {
+    if (window.historyChartInstance) {
+      window.historyChartInstance.destroy(); // 前のチャートを消す
+    }
+    window.historyChartInstance = new Chart(ctx, {
       type: "bar",
       data: {
-        labels: display.map(([n]) => n),
+        labels: data.map(([name]) => name),
         datasets: [{
           label: "出現回数",
-          data: display.map(([, c]) => c)
+          data: data.map(([, count]) => count),
+          backgroundColor: "#4fc3f7"
         }]
       },
       options: {
@@ -189,13 +202,22 @@ function renderStats() {
           title: { display: true, text: "ガチャ履歴統計" }
         },
         scales: {
-          x: { ticks: { maxRotation: 60, minRotation: 30, autoSkip: false } },
-          y: { beginAtZero: true }
+          x: {
+            ticks: {
+              autoSkip: false,
+              maxRotation: 60,
+              minRotation: 30
+            }
+          },
+          y: {
+            beginAtZero: true
+          }
         }
       }
     });
   }
 }
+
 
 window.useItem = function(encoded) {
   const name = decodeURIComponent(encoded);
