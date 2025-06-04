@@ -190,3 +190,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1800);
   });
 });
+window.useItem = useItem;
+
