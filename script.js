@@ -127,17 +127,16 @@ const inventoryArea = document.getElementById("inventory");
 
 // サウンドプリロード（ユーザー操作後に再生をスムーズに）
 function preloadSounds() {
-  ["start", "rolling", "rare"].forEach(type => {
-    const audio = new Audio();
-    audio.src = `sounds/${type}.mp3`;
-    audio.load();
+  ["seClick", "seSpin", "seRare"].forEach(id => {
+    const audio = document.getElementById(id);
+    audio?.load();
   });
 }
 window.addEventListener("click", preloadSounds, { once: true });
 
-// ビジュアル演出（CSSアニメーション補助が必要な場合に備えてクラス追加例）
+// ビジュアル演出
 function flashEffect() {
-  const body = document.body;
-  body.classList.add("flash");
-  setTimeout(() => body.classList.remove("flash"), 800);
+  document.body.classList.add("flash");
+  setTimeout(() => document.body.classList.remove("flash"), 800);
 }
+
