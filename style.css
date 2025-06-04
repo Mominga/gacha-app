@@ -128,3 +128,36 @@ body.flash {
   border-radius: 9999px;
   margin-left: 0.5rem;
 }
+/* 抽選結果を横並びに表示 */
+#gachaSlot {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-shrink: 0;
+}
+
+/* 所持アイテムタイトル */
+h2 {
+  margin-top: 2rem;
+  font-size: 1.2rem;
+}
+
+/* 所持アイテムエリア */
+#inventory {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  max-width: 90vw;
+  margin-top: 1rem;
+}
+
+/* 所持アイテム用カードサイズを小さく */
+#inventory .card {
+  width: 100px;
+  height: 120px;
+  font-size: 0.75rem;
+  padding: 0.6rem;
+}
