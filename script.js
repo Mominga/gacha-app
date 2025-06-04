@@ -106,18 +106,15 @@ function renderInventory() {
     <div class="card">
       ${name}
       ${count > 1 ? `<span class="badge">×${count}</span>` : ''}
-      <button class="use-button" onclick="useItem('${encodeURIComponent(name)}')">使用する</button>
+      <button class="use-button" onclick="window.useItem('${encodeURIComponent(name)}')">使用する</button>
     </div>
   `).join("") || '<div class="small">まだ報酬はありません。</div>';
   inventoryArea.innerHTML = html;
 }
 
-function renderResults(names) {
+function renderResults(names, inventorySnapshot) {
   const resultArea = document.getElementById("gachaSlot");
-  const inv = loadInventory();
-  const countMap = {};
-  inv.forEach(name => countMap[name] = (countMap[name] || 0) + 1);
-
+  const countMap = { ...inventorySnapshot };
   resultArea.innerHTML = names.map(name => {
     const rarity = getRewardChance(name);
     let rarityClass = '';
@@ -125,17 +122,18 @@ function renderResults(names) {
     else if (rarity <= 0.5) rarityClass = 'epic';
     else if (rarity < 5) rarityClass = 'rare';
 
-    const isMaxed = countMap[name] >= MAX_HOLD;
+    const isMaxed = (countMap[name] || 0) >= MAX_HOLD;
+    if (!isMaxed) countMap[name] = (countMap[name] || 0) + 1;
 
     return `
       <div class="card ${rarityClass}" style="opacity: ${isMaxed ? '0.4' : '1'}; position: relative;">
         ${name}
-        ${isMaxed ? '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background-color:rgba(0,0,0,0.6);padding:0.2rem 0.5rem;border-radius:6px;font-size:0.8rem;font-weight:bold;color:#f43f5e">所持数上限のため獲得無し</div>' : ''}
+        ${isMaxed ? '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background-color:rgba(0,0,0,0.6);padding:0.2rem 0.5rem;border-radius:6px;font-size:0.8rem;font-weight:bold;color:#f43f5e;text-shadow: 0 0 2px black;">所持数上限のため獲得無し</div>' : ''}
       </div>`;
   }).join("");
 }
 
-function useItem(encodedName) {
+window.useItem = function(encodedName) {
   const name = decodeURIComponent(encodedName);
   const inv = loadInventory();
   const idx = inv.indexOf(name);
@@ -144,12 +142,12 @@ function useItem(encodedName) {
     saveInventory(inv);
     renderInventory();
   }
-}
+};
 
 window.resetInventory = function() {
   localStorage.removeItem(STORAGE_KEY);
   renderInventory();
-}
+};
 
 // --- DOMContentLoaded ---
 document.addEventListener("DOMContentLoaded", () => {
@@ -171,20 +169,24 @@ document.addEventListener("DOMContentLoaded", () => {
       for (let i = 0; i < 5; i++) results.push(drawReward());
 
       const inv = loadInventory();
+      const inventorySnapshot = {};
+      inv.forEach(name => inventorySnapshot[name] = (inventorySnapshot[name] || 0) + 1);
+
       const gained = [];
       results.forEach(name => {
-        const count = inv.filter(item => item === name).length;
+        const count = inventorySnapshot[name] || 0;
         if (count < MAX_HOLD) {
           inv.push(name);
+          inventorySnapshot[name] = count + 1;
           gained.push(name);
           if (getRewardChance(name) <= 5) playSound("rare");
         } else {
-          gained.push(name); // still show even if over limit
+          gained.push(name);
         }
       });
 
       saveInventory(inv);
-      renderResults(gained);
+      renderResults(gained, inventorySnapshot);
       renderInventory();
       gachaBtn.disabled = false;
     }, 1800);
