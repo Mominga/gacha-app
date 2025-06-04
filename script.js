@@ -212,53 +212,64 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --- 抽選処理 ---
-  gachaBtn.addEventListener("click", () => {
-    const currentTickets = loadTickets();
-    if (currentTickets <= 0) {
-      alert("チケットが足りません！");
-      gachaBtn.disabled = true;
-      return;
+gachaBtn.addEventListener("click", () => {
+  const currentTickets = loadTickets();
+  if (currentTickets <= 0) {
+    alert("チケットが足りません！");
+    gachaBtn.disabled = true;
+    return;
+  }
+
+  saveTickets(currentTickets - 1);
+  renderTicketDisplay();
+
+  playSound("start");
+  flashEffect();
+  gachaBtn.disabled = true;
+
+  const resultArea = document.getElementById("gachaSlot");
+  resultArea.innerHTML = '<div class="rolling-text">抽選中...</div>';
+  playSound("rolling");
+
+  setTimeout(() => {
+    const results = [];
+    const countMap = {};
+
+    // 最大2回まで同一アイテムが出るよう制限しながら抽選
+    while (results.length < 5) {
+      const reward = drawReward();
+      const count = countMap[reward] || 0;
+      if (count < 2) {
+        results.push(reward);
+        countMap[reward] = count + 1;
+      }
     }
 
-    saveTickets(currentTickets - 1);
-    renderTicketDisplay();
+    const inv = loadInventory();
+    const inventorySnapshot = {};
+    inv.forEach(name => inventorySnapshot[name] = (inventorySnapshot[name] || 0) + 1);
 
-    playSound("start");
-    flashEffect();
-    gachaBtn.disabled = true;
+    const gained = [];
+    results.forEach(name => {
+      const count = inventorySnapshot[name] || 0;
+      if (count < MAX_HOLD) {
+        inv.push(name);
+        inventorySnapshot[name] = count + 1;
+        gained.push(name);
+        if (getRewardChance(name) <= 5) playSound("rare");
+      } else {
+        gained.push(name);
+      }
+    });
 
-    const resultArea = document.getElementById("gachaSlot");
-    resultArea.innerHTML = '<div class="rolling-text">抽選中...</div>';
-    playSound("rolling");
+    saveInventory(inv);
+    renderResults(gained, inventorySnapshot);
+    renderInventory();
+    logHistory(gained); // 🔥 履歴保存
+    gachaBtn.disabled = false;
+  }, 1800);
+});
 
-    setTimeout(() => {
-      const results = [];
-      for (let i = 0; i < 5; i++) results.push(drawReward());
-
-      const inv = loadInventory();
-      const inventorySnapshot = {};
-      inv.forEach(name => inventorySnapshot[name] = (inventorySnapshot[name] || 0) + 1);
-
-      const gained = [];
-      results.forEach(name => {
-        const count = inventorySnapshot[name] || 0;
-        if (count < MAX_HOLD) {
-          inv.push(name);
-          inventorySnapshot[name] = count + 1;
-          gained.push(name);
-          if (getRewardChance(name) <= 5) playSound("rare");
-        } else {
-          gained.push(name);
-        }
-      });
-
-      saveInventory(inv);
-      renderResults(gained, inventorySnapshot);
-      renderInventory();
-      logHistory(gained); // 🔥 履歴保存
-      gachaBtn.disabled = false;
-    }, 1800);
-  });
 
   // --- リセット処理 ---
   resetBtn.addEventListener("click", () => {
