@@ -50,9 +50,12 @@ button:hover {
 .highlight-shake {
   font-size: 1.3rem;
   background-color: #ff9800;
-  animation: shake 0.4s infinite;
   margin: 10px auto;
   display: block;
+}
+
+.highlight-shake:hover {
+  animation: shake 0.4s infinite;
 }
 
 @keyframes shake {
@@ -99,6 +102,7 @@ button:hover {
   background-color: #1c2b3a;
   border-radius: 6px;
   border: 1px solid #4f5d75;
+  word-break: break-word;
 }
 
 .card .badge {
