@@ -26,6 +26,7 @@ const rewards = [
   // 🌈 スーパーレア（合計 1.51）
   { name: "温泉に行く", chance: 0.2 },
   { name: "ゲーム1DAY", chance: 0.2 },
+  { name: "釣りに行く", chance: 0.2 },
   { name: "ボランティアDay", chance: 0.1 },
   { name: "国内旅行", chance: 0.1 },
   { name: "グルメロシアンルーレット", chance: 0.1 },
