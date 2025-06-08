@@ -1,47 +1,47 @@
 // script.js – ガチャ報酬ゲーム（最新版）
 
 const rewards = [
-  // 🎉 コモン（合計 110）
-  { name: "顔を洗う", chance: 15 },
-  { name: "耳栓を使う", chance: 15 },
-  { name: "洗濯機を回す", chance: 12 },
-  { name: "アイマスクを使う", chance: 12 },
-  { name: "夕食を50%追加", chance: 12 },
-  { name: "翌朝に鼻うがい", chance: 12 },
-  { name: "ギュ (ハグ) をする", chance: 10 },
-  { name: "お菓子を食べる", chance: 10 },
-  { name: "食器を洗う", chance: 6 },
-  { name: "お風呂に入る (有効48h)", chance: 6 },
+  // 🎉 コモン（合計 120）
+  { name: "顔を洗う", chance: 16 },
+  { name: "耳栓を使う", chance: 16 },
+  { name: "洗濯機を回す", chance: 13 },
+  { name: "アイマスクを使う", chance: 13 },
+  { name: "夕食を50%追加", chance: 13 },
+  { name: "翌朝に鼻うがい", chance: 13 },
+  { name: "ギュ (ハグ) をする", chance: 11 },
+  { name: "お菓子を食べる", chance: 11 },
+  { name: "食器を洗う", chance: 7 },
+  { name: "お風呂に入る (有効48h)", chance: 7 },
 
-  // ✨ レア（合計 5.8）
-  { name: "散歩に行く", chance: 1.0 },
-  { name: "フリマアプリに不用品を出品", chance: 1.0 },
-  { name: "全力掃除30分タイマー", chance: 0.8 },
-  { name: "読書30分タイマー", chance: 0.8 },
-  { name: "漫画喫茶に行く", chance: 0.6 },
-  { name: "編み物グッズを買う", chance: 0.6 },
-  { name: "新しいChocozapに行く", chance: 0.3 },
-  { name: "●●系カフェに行く", chance: 0.3 },
+  // ✨ レア（合計 2.5）
+  { name: "散歩に行く", chance: 0.5 },
+  { name: "フリマアプリに不用品を出品", chance: 0.4 },
+  { name: "全力掃除30分タイマー", chance: 0.4 },
+  { name: "読書30分タイマー", chance: 0.4 },
+  { name: "漫画喫茶に行く", chance: 0.3 },
+  { name: "編み物グッズを買う", chance: 0.3 },
+  { name: "新しいChocozapに行く", chance: 0.1 },
+  { name: "●●系カフェに行く", chance: 0.1 },
 
-  // 🌈 スーパーレア（合計 1.51）
-  { name: "温泉に行く", chance: 0.2 },
-  { name: "ゲーム1DAY", chance: 0.2 },
-  { name: "釣りに行く", chance: 0.2 },
-  { name: "ボランティアDay", chance: 0.1 },
-  { name: "国内旅行", chance: 0.1 },
-  { name: "グルメロシアンルーレット", chance: 0.1 },
-  { name: "映画を鑑賞する", chance: 0.1 },
-  { name: "サイクリングに行く", chance: 0.1 },
-  { name: "ルーレット旅に行く", chance: 0.1 },
-  { name: "追加で5回抽選", chance: 0.1 },
-  { name: "登山/トレッキングに行く", chance: 0.1 },
-  { name: "泳ぎに行く", chance: 0.1 },
-  { name: "逆利き Day", chance: 0.05 },
-  { name: "冷水シャワー Day", chance: 0.05 },
-  { name: "日本語10回だけ Day", chance: 0.05 },
-  { name: "○○教室ワークショップに参加", chance: 0.03 },
-  { name: "海外旅行に行く", chance: 0.01 },
-  { name: "24時間列車旅", chance: 0.01 }
+  // 🌈 スーパーレア（合計 0.6）
+  { name: "温泉に行く", chance: 0.1 },
+  { name: "ゲーム1DAY", chance: 0.1 },
+  { name: "釣りに行く", chance: 0.1 },
+  { name: "ボランティアDay", chance: 0.05 },
+  { name: "国内旅行", chance: 0.05 },
+  { name: "グルメロシアンルーレット", chance: 0.05 },
+  { name: "映画を鑑賞する", chance: 0.05 },
+  { name: "サイクリングに行く", chance: 0.05 },
+  { name: "ルーレット旅に行く", chance: 0.02 },
+  { name: "追加で5回抽選", chance: 0.02 },
+  { name: "登山/トレッキングに行く", chance: 0.02 },
+  { name: "泳ぎに行く", chance: 0.02 },
+  { name: "逆利き Day", chance: 0.01 },
+  { name: "冷水シャワー Day", chance: 0.01 },
+  { name: "日本語10回だけ Day", chance: 0.01 },
+  { name: "○○教室ワークショップに参加", chance: 0.005 },
+  { name: "海外旅行に行く", chance: 0.002 },
+  { name: "24時間列車旅", chance: 0.002 }
 ];
 
 const MAX_HOLD = 2;
