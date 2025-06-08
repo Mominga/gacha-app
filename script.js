@@ -266,13 +266,14 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
       const results = [];
       const nameCount = {};
-      while (results.length < 5) {
-        const name = drawReward();
-        if ((nameCount[name] || 0) < 2) {
-          results.push(name);
-          nameCount[name] = (nameCount[name] || 0) + 1;
-        }
-      }
+     while (results.length < 5) {
+  const name = drawReward();
+  if ((nameCount[name] || 0) < 3) {  // ←ここを2から3に変更
+    results.push(name);
+    nameCount[name] = (nameCount[name] || 0) + 1;
+  }
+}
+
 
       const inv = loadInventory();
       const snapshot = {};
